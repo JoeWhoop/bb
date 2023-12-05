@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Kody QR</title>
+</head>
+<body>
+    <h1>Przykładowa aplikacja kodów QR</h1>
+
+    <button onclick="losujKod()">Losuj kod QR z bazy danych </button>
+    <p id="kod-qr"></p>
+
+    <button onclick="akceptujKod()">Akceptuj kod QR</button>
+
+    <input type="file" id="fileInput" accept=".csv" style="display: none;"/>
+
+    <script>
+        // Kod wcześniej zdefiniowany dla frontendu
+        // ...
+
+        // Funkcja zapisująca kod do pliku baza3.csv przez wywołanie API backendu
+        function zapiszDoPliku(kod) {
+            fetch('http://localhost:3000/zapisz-kod', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ kod: kod }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Kod QR został zapisany w pliku baza3.csv.');
+                } else {
+                    alert('Wystąpił błąd podczas zapisywania kodu.');
+                }
+            })
+            .catch(error => {
+                console.error('Błąd:', error);
+                alert('Wystąpił błąd podczas zapisywania kodu.');
+            });
+        }
+
+        // Funkcja akceptująca wybrany kod QR i zapisująca go do trzeciej bazy danych (przez zapis do pliku)
+        function akceptujKod() {
+            var kodDoZapisu = document.getElementById('kod-qr').innerText.split(': ')[1];
+            if (kodDoZapisu) {
+                zapiszDoPliku(kodDoZapisu);
+            } else {
+                alert("Najpierw wybierz kod QR przed próbą zapisu!");
+            }
+        }
+    </script>
+</body>
+</html>
